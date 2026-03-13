@@ -39,7 +39,7 @@ export function addStars(scene) {
 
   // Renders each vertex as a dot
   // Stars farther away appear smaller
-  const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.1, sizeAttenuation: true });
+  const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.1, sizeAttenuation: true, fog: false });
   const stars = new THREE.Points(starGeometry, starMaterial);
   scene.add(stars);
 }

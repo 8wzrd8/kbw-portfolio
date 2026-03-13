@@ -25,6 +25,7 @@ export function createTextAreas(scene, camera, renderer) {
             color: 0xffffff,
             emissive: 0xffffff,
             emissiveIntensity: 3,
+            fog: false
           });
         }
       });
@@ -38,14 +39,17 @@ export function createTextAreas(scene, camera, renderer) {
     });
   }
 
-  loadLabel('/constellationModels/aboutMeModel.glb',      [25, 10, 15],   2, { modalId: 'about-me-modal' });
-  loadLabel('/constellationModels/thisSiteModel.glb',     [-25, 10, 15],  2, { modalId: 'this-site-modal' });
+  loadLabel('/constellationModels/aboutMeModel.glb',      [25, 12.5, 15],   3, { modalId: 'about-me-modal' });
+  loadLabel('/constellationModels/thisSiteModel.glb',     [-25, 12.5, 15],  3, { modalId: 'this-site-modal' });
+
   loadLabel('/constellationModels/asuModel.glb',          [-25, 10, 0],   3, { type: 'link', url: 'https://app.joinhandshake.com/profiles/xzw9dx' });
-  loadLabel('/constellationModels/snakeModel.glb',        [25, 10, 0],    2, { modalId: 'snake-modal' });
-  loadLabel('/constellationModels/calculatorModel.glb',   [-25, 10, -15], 2, { modalId: 'calculator-modal' });
-  loadLabel('/constellationModels/airFreshenerModel.glb', [25, 10, -15],  2, { modalId: 'air-freshener-modal' });
-  loadLabel('/constellationModels/creditsModel.glb',      [0, 5, -20],    2, { modalId: 'credits-modal' });
-  loadLabel('/constellationModels/titleModel.glb',        [0, 10, 20],    4, {});
+  loadLabel('/constellationModels/snakeModel.glb',        [25, 10, 0],    3, { modalId: 'snake-modal' });
+
+  loadLabel('/constellationModels/calculatorModel.glb',   [-25, 12.5, -15], 3, { modalId: 'calculator-modal' });
+  loadLabel('/constellationModels/airFreshenerModel.glb', [25, 12.5, -15],  3, { modalId: 'air-freshener-modal' });
+  
+  loadLabel('/constellationModels/creditsModel.glb',      [0, 10, -20],    3, { modalId: 'credits-modal' });
+  loadLabel('/constellationModels/titleModel.glb',        [0, 12.5, 25],    4, {});
 
   //Close button handler for all modals
   document.querySelectorAll('.modal-close-btn').forEach(btn => {

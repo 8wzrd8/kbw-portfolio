@@ -26,13 +26,10 @@ const loadingManager = new THREE.LoadingManager(
 );
 const loader = new GLTFLoader(loadingManager);
 
-
-
-
 // Scene
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x0a0a1a);
-scene.fog = new THREE.FogExp2(0x000000, 0.005);
+scene.fog = new THREE.FogExp2(0x000000, 0.01);
 
 //Starfield & Shooting Stars (See stars.js for more info, and the animate() at the bottom of main.js)
 addStars(scene);
@@ -68,7 +65,7 @@ loader.load('/mainPage/ocean.glb', (gltf) => {
 });
 
 //Makes it so the ocean isn't pitch black
-const moonLight = new THREE.DirectionalLight(0x7691ad, 1); // slightly blue-white like moonlight
+const moonLight = new THREE.DirectionalLight(0xffffff, 100); // slightly blue-white like moonlight
 moonLight.position.set(0, 1, 0); // above the scene
 scene.add(moonLight);
 
