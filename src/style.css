@@ -1,0 +1,487 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  overflow: hidden;
+}
+
+/*Loading Screen Layout: loading-screen - > loading-bar-container - > loading-bar*/
+#loading-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-family: 'Roboto Slab', serif;
+  font-size: 1.5rem;
+  z-index: 100;
+  transition: opacity 1s ease;
+}
+
+/*Used to fade in and out the loading screen once completed*/
+#loading-screen.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#loading-bar-container {
+  width: 300px;
+  height: 4px;
+  background: #333;
+  margin-top: 16px;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+#loading-bar {
+  height: 100%;
+  width: 0%;
+  background: white;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+/*=============================================*/
+/*----------------ALL MODALS START-------------*/
+/*=============================================*/
+.modal-overlay {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 50;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/*Both of these methods are used for the transition created to open the pages.*/
+.modal-overlay.visible {
+  display: flex;
+  opacity: 1;
+}
+
+.modal-overlay.visible .modal-content {
+  transform: translateY(0);
+}
+
+.modal-content {
+  background: #0a0a1a38;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  width: 90%;
+  height: 90%;
+  position: relative;
+  padding: 0px;
+  color: white;
+  transform: translateY(100%);
+  transition: transform 0.5s cubic-bezier(0.77, 0, 0.18, 1);
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 16px;
+  left: 26px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+  opacity: 0.7;
+  z-index: 2;
+}
+
+/*Makes the button brighter when we hover over it*/
+.modal-close-btn:hover {
+  opacity: 1;
+}
+
+.modal-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  z-index: 0;
+}
+
+.modal-scroll {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
+
+#modal-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/*=============================================*/
+/*-----------------ALL MODALS END--------------*/
+/*=============================================*/
+
+/*=============================================*/
+/*------------ABOUT ME SECTION START-----------*/
+/*=============================================*/
+
+/* Outer flex column container for all three about-me sections.
+   min-height: 300% makes it taller than the modal so the user can scroll,
+   which drives the starfield parallax in modalScenes.js */
+#about-me {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5em;
+  padding: 3em 3%;
+  min-height: 300%;
+}
+
+/* Each row in the about-me section (text card + image card side by side).
+   align-items: stretch forces both cards to match the height of the taller one */
+.about-section {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 30px;
+  width: 100%;
+}
+
+/* Text container inside a text-card. flex: 1 lets it grow to fill available space */
+.about-section-text {
+  flex: 1;
+  color: white;
+  font-family: 'Roboto Slab', serif;
+}
+
+/* Section heading (e.g. "About Me", "My Skills", "Goals") */
+.about-section-text h1 {
+  font-family: 'Roboto Slab', serif;
+  font-size: 4em;
+  margin-bottom: 0em;
+  letter-spacing: 4px;
+}
+
+/* Body paragraph text inside each section */
+.about-section-text p {
+  font-size: 1.75em;
+  line-height: 1.9;
+  margin-bottom: 0px;
+  opacity: 0.9;
+  color: #e0e0e0;
+}
+
+/* Wrapper around the <img> inside an image-card.
+   width/height 100% makes it fill the card fully */
+.about-section-image {
+  flex-shrink: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Profile photo — fills its container and crops with object-fit: cover
+   so it never distorts regardless of image aspect ratio */
+.about-section-image img {
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  object-fit: cover;
+}
+
+.about-section-card {
+  border-radius: 24px;
+  padding: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.text-card {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.75);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+.image-card {
+  flex-shrink: 0;
+  width: 35%;
+  background: rgba(0, 0, 0, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 12px;
+  display: flex;
+  align-items: stretch;
+}
+
+.sub-image-card {
+  flex-shrink: 0;
+  width: 40%;
+  height: auto;
+  background: rgba(0, 0, 0, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 26px;
+  display: flex;
+  align-items: c;
+}
+
+.text-card .about-section-text h1 {
+  color: #ffffff;
+  /*border: 2px solid rgba(255, 255, 255, 0.15);*/
+  border-radius: 16px;
+  padding: 12px;
+}
+
+.text-card .about-section-text p {
+  color: #ffffff;
+  /*border: 2px solid rgba(255, 255, 255, 0.15);*/
+  border-radius: 16px;
+  padding: 12px;
+  opacity: 1;
+}
+/*=============================================*/
+/*------------ABOUT ME SECTION END-----------*/
+/*=============================================*/
+
+/*=============================================*/
+/*-------------SNAKE SECTION START-------------*/
+/*=============================================*/
+
+#snake-modal .image-card {
+  flex-shrink: 0;
+  width: 60%;
+  background: rgba(0, 0, 0, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 26px;
+  display: flex;
+  align-items: stretch;
+}
+
+#snake-modal .about-section-text h1 {
+  font-family: 'Roboto Slab', serif;
+  font-size: 4em;
+  margin-bottom: 0em;
+  letter-spacing: 4px;
+}
+
+/* Body paragraph text inside each section */
+#snake-modal .about-section-text p {
+  font-size: 1.75em;
+  line-height: 1.9;
+  margin-bottom: 0px;
+  opacity: 0.9;
+  color: #e0e0e0;
+}
+
+#snake-modal .text-card {
+  flex: 1;
+  padding: 25px;
+ 
+  background: rgba(0, 0, 0, 0.75);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+#snake-modal .text-card .about-section-text h1 {
+  color: #ffffff;
+  /*border: 2px solid rgba(255, 255, 255, 0.15);*/
+  border-radius: 16px;
+  padding: 0px;
+  
+}
+
+#snake-modal .text-card .about-section-text p {
+  color: #ffffff;
+  /*border: 2px solid rgba(255, 255, 255, 0.15);*/
+  border-radius: 16px;
+  padding: 0px;
+  opacity: 1;
+}
+
+#snake-modal #about-me {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3em;
+  padding: 3em 3%;
+  min-height: auto;
+}
+
+video {
+  flex-shrink: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  object-fit: cover; 
+  display: flex;
+  align-items: stretch;
+}
+
+/*=============================================*/
+/*-------------SNAKE SECTION END---------------*/
+/*=============================================*/
+
+/*=============================================*/
+/*----------CALCULATOR SECTION START-----------*/
+/*=============================================*/
+
+#calculator-modal .image-card {
+  flex-shrink: 0;
+  width: 30%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 12px;
+  display: flex;
+  align-items: stretch;
+}
+
+#calculator-modal .about-section-image img {
+  width: 100%;
+  border-radius: 16px;
+  object-fit: contain;
+}
+
+#calculator-modal .about-section-text h1 {
+  font-family: 'Roboto Slab', serif;
+  font-size: 4em;
+  margin-bottom: 0em;
+  letter-spacing: 4px;
+}
+
+/* Body paragraph text inside each section */
+#calculator-modal .about-section-text p {
+  font-size: 1.75em;
+  line-height: 1.9;
+  margin-bottom: 0px;
+  opacity: 0.9;
+  color: #e0e0e0;
+}
+
+#calculator-modal .text-card {
+  flex: 1;
+  padding: 25px;
+ 
+  background: rgba(0, 0, 0, 0.75);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+#calculator-modal .text-card .about-section-text h1 {
+  color: #ffffff;
+  /*border: 2px solid rgba(255, 255, 255, 0.15);*/
+  border-radius: 16px;
+  padding: 0px;
+  
+}
+
+#calculator-modal .text-card .about-section-text p {
+  color: #ffffff;
+  /*border: 2px solid rgba(255, 255, 255, 0.15);*/
+  border-radius: 16px;
+  padding: 0px;
+  opacity: 1;
+}
+
+#calculator-modal #about-me {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3em;
+  padding: 3em 3%;
+  min-height: auto;
+}
+
+/*=============================================*/
+/*----------CALCULATOR SECTION END-------------*/
+/*=============================================*/
+
+
+/*=============================================*/
+/*-----------FRESHENER SECTION START-----------*/
+/*=============================================*/
+
+#air-freshener-modal .image-card {
+  flex-shrink: 0;
+  width: 30%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 12px;
+  display: flex;
+  align-items: stretch;
+}
+
+#air-freshener-modal .about-section-image img {
+  width: 100%;
+  border-radius: 16px;
+  object-fit: contain;
+}
+
+#calculator-modal .about-section-text h1 {
+  font-family: 'Roboto Slab', serif;
+  font-size: 4em;
+  margin-bottom: 0em;
+  letter-spacing: 4px;
+}
+
+/* Body paragraph text inside each section */
+#air-freshener-modal .about-section-text p {
+  font-size: 1.75em;
+  line-height: 1.9;
+  margin-bottom: 0px;
+  opacity: 0.9;
+  color: #e0e0e0;
+}
+
+#air-freshener-modal .text-card {
+  flex: 1;
+  padding: 25px;
+ 
+  background: rgba(0, 0, 0, 0.75);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+#air-freshener-modal .text-card .about-section-text h1 {
+  color: #ffffff;
+  /*border: 2px solid rgba(255, 255, 255, 0.15);*/
+  border-radius: 16px;
+  padding: 0px;
+  
+}
+
+#air-freshener-modal .text-card .about-section-text p {
+  color: #ffffff;
+  /*border: 2px solid rgba(255, 255, 255, 0.15);*/
+  border-radius: 16px;
+  padding: 0px;
+  opacity: 1;
+}
+
+#air-freshener-modal #about-me {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3em;
+  padding: 3em 3%;
+  min-height: auto;
+}
+
+/*=============================================*/
+/*------------FRESHENER SECTION END------------*/
+/*=============================================*/
