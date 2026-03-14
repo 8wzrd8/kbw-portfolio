@@ -42,6 +42,7 @@ camera.position.set(0, 0, 0);
 
 // Renderer
 const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
@@ -74,13 +75,6 @@ const audio = new Audio('/soundEffects/waves.mp3');
 audio.loop = true;
 audio.volume = 0.1; // adjust to taste
 
-//Stars audio only if the the audio is paused and the user clicked
-renderer.domElement.addEventListener('mousedown', (e) => {
-  if (audio.paused) audio.play(); // only play if not already playing
-  isDragging = true;
-  prevMouseX = e.clientX;
-  prevMouseY = e.clientY;
-});
 
 // For thoose who are actually reading my code and 
 // want some explanation as to how this first person camera works:
@@ -106,11 +100,12 @@ let pitch = 0;
 let targetYaw = Math.PI;
 let targetPitch = 0;
 
-
+//FOR DESKTOP DEVICES
 
 //When the user clicks down set draggin to true (this stops when unclicked, see mouseup() below)
 //prevX and prevY are the 2D cords where the user first clicked
 renderer.domElement.addEventListener('mousedown', (e) => {
+  if (audio.paused) audio.play(); // only play if not already playing
   isDragging = true;
   prevMouseX = e.clientX;
   prevMouseY = e.clientY;
@@ -145,14 +140,57 @@ window.addEventListener('mousemove', (e) => {
 //They are done moving the camera
 window.addEventListener('mouseup', () => isDragging = false);
 
+//FOR MOBILE DEVICES
+
+renderer.domElement.addEventListener('touchstart', (e) => {
+  if (audio.paused) audio.play(); // only play if not already playing
+  isDragging = true;
+  prevMouseX = e.touches[0].clientX;
+  prevMouseY = e.touches[0].clientY;
+});
+
+window.addEventListener('touchmove', (e) => {
+  //If they never clicked down we dont care, so we return
+  if (!isDragging) return;
+
+  //Delta (𐤃) represents change.
+  //We get the change in X by subtracting the current e.clientX by the previous prevMouseX.
+  //We get the change in Y by subtracting the current e.clientY pos by the previous prevMouseY.
+  const deltaX = e.touches[0].clientX - prevMouseX;
+  const deltaY = e.touches[0].clientY - prevMouseY;
+
+  //On its own, we would normally do targetYaw += deltaX; & targetPitch += deltaY;
+  //However, the 0.03 dampens the mosue movement and makes it feel smoother.
+  targetYaw   += deltaX * 0.003;
+  targetPitch += deltaY * 0.003;
+
+  //We dont want the user to look all the way down, so we limit there viewing area with this.
+  //This limits there vertical rotation to between -0.5 radians and Math.pi / 2
+  targetPitch = Math.max(-0.5, Math.min(Math.PI / 2, targetPitch));
+
+  //Now the previous X & Y are where we stopped
+  prevMouseX = e.touches[0].clientX;
+  prevMouseY = e.touches[0].clientY;
+});
+
+window.addEventListener('touchend', () => isDragging = false);
+
 
 // Handle window resize
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
+  renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
-
+window.addEventListener('orientationchange', () => {
+  setTimeout(() => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  }, 100);
+});
 
 const clock = new THREE.Clock();
 let elapsed = 0;

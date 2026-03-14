@@ -4,11 +4,24 @@
   box-sizing: border-box;
 }
 
-body {
+html, body {
+  width: 100%;
+  height: 100%;
   overflow: hidden;
+  background: #000000;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
 }
 
-/*Loading Screen Layout: loading-screen - > loading-bar-container - > loading-bar*/
+/* Main Three.js canvas only — not modal canvases */
+body > canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/*Loading Screen Layout: loading-screen -> loading-bar-container -> loading-bar*/
 #loading-screen {
   position: absolute;
   top: 0;
@@ -53,6 +66,7 @@ body {
 /*=============================================*/
 /*----------------ALL MODALS START-------------*/
 /*=============================================*/
+
 .modal-overlay {
   display: none;
   position: absolute;
@@ -66,6 +80,10 @@ body {
   justify-content: center;
   opacity: 0;
   transition: opacity 0.3s ease;
+  /* Re-enable touch interaction inside modals */
+  touch-action: auto;
+  user-select: text;
+  -webkit-user-select: text;
 }
 
 /*Both of these methods are used for the transition created to open the pages.*/
@@ -126,9 +144,12 @@ body {
   height: 100%;
   overflow-y: scroll;
   scrollbar-width: none;
+  /* Re-enable scrolling inside modals */
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
 }
 
-#modal-scroll::-webkit-scrollbar {
+.modal-scroll::-webkit-scrollbar {
   display: none;
 }
 
@@ -140,7 +161,7 @@ body {
 /*------------ABOUT ME SECTION START-----------*/
 /*=============================================*/
 
-/* Outer flex column container for all three about-me sections.
+/* Outer flex column container for all sections.
    min-height: 300% makes it taller than the modal so the user can scroll,
    which drives the starfield parallax in modalScenes.js */
 #about-me {
@@ -236,25 +257,24 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.15);
   padding: 26px;
   display: flex;
-  align-items: c;
+  align-items: center;
 }
 
 .text-card .about-section-text h1 {
   color: #ffffff;
-  /*border: 2px solid rgba(255, 255, 255, 0.15);*/
   border-radius: 16px;
   padding: 12px;
 }
 
 .text-card .about-section-text p {
   color: #ffffff;
-  /*border: 2px solid rgba(255, 255, 255, 0.15);*/
   border-radius: 16px;
   padding: 12px;
   opacity: 1;
 }
+
 /*=============================================*/
-/*------------ABOUT ME SECTION END-----------*/
+/*------------ABOUT ME SECTION END-------------*/
 /*=============================================*/
 
 /*=============================================*/
@@ -278,7 +298,6 @@ body {
   letter-spacing: 4px;
 }
 
-/* Body paragraph text inside each section */
 #snake-modal .about-section-text p {
   font-size: 1.75em;
   line-height: 1.9;
@@ -290,22 +309,18 @@ body {
 #snake-modal .text-card {
   flex: 1;
   padding: 25px;
- 
   background: rgba(0, 0, 0, 0.75);
   border: 2px solid rgba(255, 255, 255, 0.15);
 }
 
 #snake-modal .text-card .about-section-text h1 {
   color: #ffffff;
-  /*border: 2px solid rgba(255, 255, 255, 0.15);*/
   border-radius: 16px;
   padding: 0px;
-  
 }
 
 #snake-modal .text-card .about-section-text p {
   color: #ffffff;
-  /*border: 2px solid rgba(255, 255, 255, 0.15);*/
   border-radius: 16px;
   padding: 0px;
   opacity: 1;
@@ -326,7 +341,7 @@ video {
   width: 100%;
   height: 100%;
   border-radius: 16px;
-  object-fit: cover; 
+  object-fit: cover;
   display: flex;
   align-items: stretch;
 }
@@ -363,7 +378,6 @@ video {
   letter-spacing: 4px;
 }
 
-/* Body paragraph text inside each section */
 #calculator-modal .about-section-text p {
   font-size: 1.75em;
   line-height: 1.9;
@@ -375,22 +389,18 @@ video {
 #calculator-modal .text-card {
   flex: 1;
   padding: 25px;
- 
   background: rgba(0, 0, 0, 0.75);
   border: 2px solid rgba(255, 255, 255, 0.15);
 }
 
 #calculator-modal .text-card .about-section-text h1 {
   color: #ffffff;
-  /*border: 2px solid rgba(255, 255, 255, 0.15);*/
   border-radius: 16px;
   padding: 0px;
-  
 }
 
 #calculator-modal .text-card .about-section-text p {
   color: #ffffff;
-  /*border: 2px solid rgba(255, 255, 255, 0.15);*/
   border-radius: 16px;
   padding: 0px;
   opacity: 1;
@@ -409,7 +419,6 @@ video {
 /*=============================================*/
 /*----------CALCULATOR SECTION END-------------*/
 /*=============================================*/
-
 
 /*=============================================*/
 /*-----------FRESHENER SECTION START-----------*/
@@ -432,14 +441,13 @@ video {
   object-fit: contain;
 }
 
-#calculator-modal .about-section-text h1 {
+#air-freshener-modal .about-section-text h1 {
   font-family: 'Roboto Slab', serif;
   font-size: 4em;
   margin-bottom: 0em;
   letter-spacing: 4px;
 }
 
-/* Body paragraph text inside each section */
 #air-freshener-modal .about-section-text p {
   font-size: 1.75em;
   line-height: 1.9;
@@ -451,22 +459,18 @@ video {
 #air-freshener-modal .text-card {
   flex: 1;
   padding: 25px;
- 
   background: rgba(0, 0, 0, 0.75);
   border: 2px solid rgba(255, 255, 255, 0.15);
 }
 
 #air-freshener-modal .text-card .about-section-text h1 {
   color: #ffffff;
-  /*border: 2px solid rgba(255, 255, 255, 0.15);*/
   border-radius: 16px;
   padding: 0px;
-  
 }
 
 #air-freshener-modal .text-card .about-section-text p {
   color: #ffffff;
-  /*border: 2px solid rgba(255, 255, 255, 0.15);*/
   border-radius: 16px;
   padding: 0px;
   opacity: 1;
@@ -484,4 +488,67 @@ video {
 
 /*=============================================*/
 /*------------FRESHENER SECTION END------------*/
+/*=============================================*/
+
+/*=============================================*/
+/*-----------MOBILE RESPONSIVE START-----------*/
+/*=============================================*/
+
+@media (max-width: 768px) {
+
+  /* Stack sections vertically on mobile */
+  .about-section {
+    flex-direction: column;
+  }
+
+  /* Image cards take full width */
+  .image-card,
+  .sub-image-card,
+  #snake-modal .image-card,
+  #calculator-modal .image-card,
+  #air-freshener-modal .image-card {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Text cards take full width */
+  .text-card {
+    width: 100%;
+  }
+
+  /* Shrink headings */
+  .about-section-text h1 {
+    font-size: 2em;
+  }
+
+  /* Shrink paragraph text */
+  .about-section-text p {
+    font-size: 1em;
+    line-height: 1.6;
+  }
+
+  /* Reduce padding on the content container */
+  #about-me {
+    padding: 2em 4%;
+    gap: 2em;
+  }
+
+  .about-section-image{
+    width: 50%;
+    height: 50%;
+  }
+
+  .about-section-card image-card{
+    width: 50%;
+    height: 50%;
+  }
+
+  /* Reduce card padding */
+  .about-section-card {
+    padding: 16px;
+  }
+}
+
+/*=============================================*/
+/*------------MOBILE RESPONSIVE END------------*/
 /*=============================================*/
