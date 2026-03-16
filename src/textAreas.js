@@ -108,3 +108,71 @@ export function createTextAreas(scene, camera, renderer) {
     }
   });
 }
+
+export function initCarousels() {
+  document.querySelectorAll('.modal-overlay').forEach(modal => {
+    const mediaItems = [];
+
+    modal.querySelectorAll(
+      '.image-card img, .image-card video, .sub-image-card img, .sub-image-card video'
+    ).forEach(el => {
+      mediaItems.push(el.cloneNode(true));
+    });
+
+    if (mediaItems.length === 0) return;
+
+    // Build the carousel container
+    const carousel = document.createElement('div');
+    carousel.classList.add('mobile-carousel');
+
+    const track = document.createElement('div');
+    track.classList.add('carousel-track');
+
+    mediaItems.forEach(item => {
+      const slide = document.createElement('div');
+      slide.classList.add('carousel-slide');
+      slide.appendChild(item);
+      track.appendChild(slide);
+    });
+
+    const prevBtn = document.createElement('button');
+    prevBtn.classList.add('carousel-btn', 'carousel-prev');
+    prevBtn.textContent = '‹';
+
+    const nextBtn = document.createElement('button');
+    nextBtn.classList.add('carousel-btn', 'carousel-next');
+    nextBtn.textContent = '›';
+
+    const counter = document.createElement('div');
+    counter.classList.add('carousel-counter');
+
+    carousel.appendChild(track);
+    carousel.appendChild(prevBtn);
+    carousel.appendChild(nextBtn);
+    carousel.appendChild(counter);
+
+    // Append carousel to the modal's scroll container
+    const scrollContainer = modal.querySelector('.modal-scroll');
+    if (scrollContainer) scrollContainer.appendChild(carousel);
+
+    // Carousel logic
+    let current = 0;
+
+    function update() {
+      track.style.transform = `translateX(-${current * 100}%)`;
+      counter.textContent = `${current + 1} / ${mediaItems.length}`;
+    }
+
+    prevBtn.addEventListener('click', () => {
+      current = (current - 1 + mediaItems.length) % mediaItems.length;
+      update();
+    });
+
+    nextBtn.addEventListener('click', () => {
+      current = (current + 1) % mediaItems.length;
+      update();
+    });
+
+    update();
+  });
+}

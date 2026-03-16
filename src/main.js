@@ -2,7 +2,7 @@ import './style.css';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { addStars, addShootingStars } from './stars.js';
-import { createTextAreas } from './textAreas.js';
+import { createTextAreas, initCarousels} from './textAreas.js';
 import { initModalScenes } from './modalScenes.js';
 
 
@@ -49,6 +49,9 @@ document.body.appendChild(renderer.domElement);
 //Constellations Text Areas (See textAreas.js for more info)
 createTextAreas(scene, camera, renderer);
 initModalScenes();
+if (window.innerWidth <= 768) {
+  initCarousels();
+}
 
 
 //Load ocean and it to the scene -> create a mixer to load the glb animation at index [0]

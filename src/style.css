@@ -495,57 +495,68 @@ video {
 /*=============================================*/
 
 @media (max-width: 768px) {
-
-  /* Stack sections vertically on mobile */
-  .about-section {
-    flex-direction: column;
-  }
-
-  /* Image cards take full width */
   .image-card,
   .sub-image-card,
-  #snake-modal .image-card,
-  #calculator-modal .image-card,
-  #air-freshener-modal .image-card {
+  .about-section-card.image-card,
+  .about-section-card.sub-image-card {
+    display: none !important;
+  }
+
+  .mobile-carousel {
+    position: relative;
     width: 100%;
-    height: 100%;
-  }
-
-  /* Text cards take full width */
-  .text-card {
-    width: 100%;
-  }
-
-  /* Shrink headings */
-  .about-section-text h1 {
-    font-size: 2em;
-  }
-
-  /* Shrink paragraph text */
-  .about-section-text p {
-    font-size: 1em;
-    line-height: 1.6;
-  }
-
-  /* Reduce padding on the content container */
-  #about-me {
-    padding: 2em 4%;
-    gap: 2em;
-  }
-
-  .about-section-image{
-    width: 50%;
-    height: 50%;
-  }
-
-  .about-section-card image-card{
-    width: 50%;
-    height: 50%;
-  }
-
-  /* Reduce card padding */
-  .about-section-card {
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 24px;
+    margin: 2em 0;
     padding: 16px;
+  }
+
+  .carousel-track {
+    display: flex;
+    transition: transform 0.4s ease;
+  }
+
+  .carousel-slide {
+    min-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .carousel-slide img,
+  .carousel-slide video {
+    width: 100%;
+    max-height: 300px;
+    object-fit: contain;
+    border-radius: 12px;
+  }
+
+  .carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    color: white;
+    font-size: 2rem;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    z-index: 2;
+  }
+
+  .carousel-prev { left: 8px; }
+  .carousel-next { right: 8px; }
+
+  .carousel-counter {
+    text-align: center;
+    color: white;
+    font-family: 'Roboto Slab', serif;
+    font-size: 0.9rem;
+    margin-top: 8px;
+    opacity: 0.7;
   }
 }
 
