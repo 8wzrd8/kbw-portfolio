@@ -1,6 +1,8 @@
 import './style.css';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { clone } from 'three/addons/utils/SkeletonUtils.js';
+import { Sky } from 'three/addons/objects/Sky.js';
 import { addStars, addShootingStars } from './stars.js';
 import { createTextAreas, initCarousels} from './textAreas.js';
 import { initModalScenes } from './modalScenes.js';
@@ -31,6 +33,27 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x0a0a1a);
 scene.fog = new THREE.FogExp2(0x000000, 0.01);
 
+
+const sky = new Sky();
+sky.scale.setScalar(1000);
+scene.add(sky);
+
+const skyUniforms = sky.material.uniforms;
+skyUniforms['turbidity'].value = 2;
+skyUniforms['rayleigh'].value = 4;
+skyUniforms['mieCoefficient'].value = 0.005;
+skyUniforms['mieDirectionalG'].value = 0.8;
+
+// Sun position (set low for sunset/sunrise look)
+const sun = new THREE.Vector3();
+const phi = THREE.MathUtils.degToRad(90); // near horizon
+const theta = THREE.MathUtils.degToRad(180);
+sun.setFromSphericalCoords(1, phi, theta);
+skyUniforms['sunPosition'].value.copy(sun);
+
+// Remove flat background since sky replaces it
+scene.background = null;
+
 //Starfield & Shooting Stars (See stars.js for more info, and the animate() at the bottom of main.js)
 addStars(scene);
 const updateShootingStars = addShootingStars(scene);
@@ -54,23 +77,31 @@ if (window.innerWidth <= 768) {
 }
 
 
-//Load ocean and it to the scene -> create a mixer to load the glb animation at index [0]
-let mixer;
-loader.load('/mainPage/ocean.glb', (gltf) => {
-  const ocean = gltf.scene;
-  ocean.position.set(0, -5.5, 0);
-  ocean.scale.set(1, 1, 1);
-  scene.add(ocean);
+const mixers = [];
 
-  // Set up animation mixer
-  mixer = new THREE.AnimationMixer(ocean);
-  const action = mixer.clipAction(gltf.animations[0]); // [0] is the first animation
-  action.play();
-});
+let mixer;
+
+  loader.load('/mainPage/ocean.glb', (gltf) => {
+    const ocean = gltf.scene;
+    ocean.position.set(0, -4, 0);
+    ocean.scale.set(1, 1, 1);
+    scene.add(ocean);
+
+    // Set up animation mixer
+    mixer = new THREE.AnimationMixer(ocean);
+    const action = mixer.clipAction(gltf.animations[0]); // [0] is the first animation
+    action.play();
+  });
+
+
 
 //Makes it so the ocean isn't pitch black
-const moonLight = new THREE.DirectionalLight(0xffffff, 100); // slightly blue-white like moonlight
-moonLight.position.set(0, 1, 0); // above the scene
+const sunLight = new THREE.DirectionalLight(0xff3c00, 1000);
+sunLight.position.set(0, 0, -100);
+scene.add(sunLight);
+
+const moonLight = new THREE.DirectionalLight(0xffffff, 100);
+moonLight.position.set(0, 100, 10);
 scene.add(moonLight);
 
 //Wave sounds
@@ -206,7 +237,7 @@ function animate() {
   elapsed += delta;
 
   //The ocean animation needs this to forward the animation by delta time
-  if (mixer) mixer.update(delta);
+  if (mixer) {mixer.update(delta);}
 
   //Slowly moves the camera up and down 
   camera.position.y = Math.sin(elapsed * 0.8) * 0.125;

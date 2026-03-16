@@ -15,29 +15,37 @@ export function createTextAreas(scene, camera, renderer) {
   // rotationX - I made these models in blender, so all glb models have to be rotated by Math.PI / 2
   // useLookAt - all models point towards (0, 0, 0) ~ Camera .
   function loadLabel(path, position, scale, userData, rotationX = Math.PI / 2, useLookAt = true) {
-    loader.load(path, (gltf) => {
-      const model = gltf.scene;
-      model.rotation.x = rotationX;
-      model.scale.setScalar(scale);
-      model.traverse((child) => {
-        if (child.isMesh) {
-          child.material = new THREE.MeshStandardMaterial({
-            color: 0xffffff,
-            emissive: 0xffffff,
-            emissiveIntensity: 3,
-            fog: false
-          });
-        }
-      });
-      const pivot = new THREE.Group();
-      pivot.position.set(...position);
-      pivot.add(model);
-      if (useLookAt) pivot.lookAt(0, 0, 0);
-      Object.assign(pivot.userData, userData);
-      scene.add(pivot);
-      if (Object.keys(userData).length > 0) clickable.push(pivot);
+  loader.load(path, (gltf) => {
+    const model = gltf.scene;
+    model.rotation.x = rotationX;
+    model.scale.setScalar(scale);
+    model.traverse((child) => {
+      if (child.isMesh) {
+        child.material = new THREE.MeshBasicMaterial({
+          color: 0xffffff,
+        });
+      }
     });
-  }
+
+    const pivot = new THREE.Group();
+    pivot.position.set(...position);
+    pivot.add(model);
+    if (useLookAt) pivot.lookAt(0, 0, 0);
+    Object.assign(pivot.userData, userData);
+
+    // Invisible hitbox — easier to click than the thin font geometry
+    if (Object.keys(userData).length > 0) {
+      const hitbox = new THREE.Mesh(
+        new THREE.BoxGeometry(8, 3, 0.5), // adjust width/height to fit your labels
+        new THREE.MeshBasicMaterial({ visible: false })
+      );
+      pivot.add(hitbox);
+      clickable.push(pivot);
+    }
+
+    scene.add(pivot);
+  });
+}
 
   loadLabel('/constellationModels/aboutMeModel.glb',      [25, 12.5, 15],   3, { modalId: 'about-me-modal' });
   loadLabel('/constellationModels/thisSiteModel.glb',     [-25, 12.5, 15],  3, { modalId: 'this-site-modal' });
@@ -50,6 +58,8 @@ export function createTextAreas(scene, camera, renderer) {
   
   loadLabel('/constellationModels/creditsModel.glb',      [0, 10, -20],    3, { modalId: 'credits-modal' });
   loadLabel('/constellationModels/titleModel.glb',        [0, 12.5, 25],    4, {});
+
+  loadLabel('/constellationModels/cookedModel.glb',        [0, 2, -20],    2, { type: 'link', url: 'https://www.bls.gov/news.release/empsit.nr0.htm' });
 
   //Close button handler for all modals
   document.querySelectorAll('.modal-close-btn').forEach(btn => {

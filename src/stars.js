@@ -27,7 +27,7 @@ export function addStars(scene) {
     const distance = Math.sqrt(x * x + y * y + z * z);
 
     // Only accept this star if it's far enough away from the center
-    if (distance > minDistance) {
+    if (distance > minDistance && y >= 0) {
       positions[i]     = x;
       positions[i + 1] = y;
       positions[i + 2] = z;
