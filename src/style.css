@@ -273,6 +273,62 @@ body > canvas {
   opacity: 1;
 }
 
+.inline-carousel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.inline-carousel .carousel-track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.4s ease;
+}
+
+.inline-carousel .carousel-slide {
+  min-width: 100%;
+  height: 100%;
+}
+
+.inline-carousel .carousel-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 16px;
+}
+
+.inline-carousel .carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  color: white;
+  font-size: 2rem;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.inline-carousel .carousel-prev { left: 8px; }
+.inline-carousel .carousel-next { right: 8px; }
+
+.inline-carousel .carousel-counter {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-family: 'Roboto Slab', serif;
+  font-size: 0.9rem;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 2px 8px;
+  border-radius: 8px;
+}
+
 /*=============================================*/
 /*------------ABOUT ME SECTION END-------------*/
 /*=============================================*/

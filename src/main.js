@@ -3,8 +3,32 @@ import * as THREE from 'three';
 import { Sky } from 'three/addons/objects/Sky.js';
 import { Water } from 'three/addons/objects/Water.js';
 import { addStars, addShootingStars } from './stars.js';
-import { createTextAreas, initCarousels} from './textAreas.js';
 import { initModalScenes } from './modalScenes.js';
+import { createTextAreas, initCarousels, createInlineCarousel } from './textAreas.js';
+
+const thisSiteCarousel1 = createInlineCarousel([
+  '/thisSitePage/threejs.jpg',
+  '/thisSitePage/modelShowcase.jpg',
+  '/thisSitePage/serverSide.jpg',
+]);
+
+document.getElementById('this-site-carousel-slot-1').appendChild(thisSiteCarousel1);
+
+const thisSiteCarousel2 = createInlineCarousel([
+  '/thisSitePage/code.mp4',
+  '/thisSitePage/constellationPreview.jpg',
+  '/thisSitePage/gitPreview.jpg',
+]);
+
+document.getElementById('this-site-carousel-slot-2').appendChild(thisSiteCarousel2);
+
+const thisSiteCarousel3 = createInlineCarousel([
+  '/thisSitePage/topDown.jpg',
+  '/thisSitePage/serverSide.jpg',
+]);
+
+document.getElementById('this-site-carousel-slot-3').appendChild(thisSiteCarousel3);
+
 
 
 
@@ -36,7 +60,7 @@ skyUniforms['mieDirectionalG'].value = 0.8;
 
 // Sun position (set low for sunset/sunrise look)
 const sun = new THREE.Vector3();
-const phi = THREE.MathUtils.degToRad(87.5); // near horizon
+const phi = THREE.MathUtils.degToRad(85); // near horizon
 const theta = THREE.MathUtils.degToRad(180);
 sun.setFromSphericalCoords(1, phi, theta);
 skyUniforms['sunPosition'].value.copy(sun);

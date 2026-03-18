@@ -199,3 +199,72 @@ export function initCarousels() {
     update();
   });
 }
+
+export function createInlineCarousel(images) {
+  const carousel = document.createElement('div');
+  carousel.classList.add('inline-carousel');
+
+  const track = document.createElement('div');
+  track.classList.add('carousel-track');
+
+  images.forEach(src => {
+  const slide = document.createElement('div');
+  slide.classList.add('carousel-slide');
+
+  let media;
+  if (src.endsWith('.mp4')) {
+    media = document.createElement('video');
+    media.autoplay = true;
+    media.loop = true;
+    media.muted = true;
+    media.playsInline = true;
+    const source = document.createElement('source');
+    source.src = src;
+    source.type = 'video/mp4';
+    media.appendChild(source);
+  } else {
+    media = document.createElement('img');
+    media.src = src;
+    media.alt = '';
+  }
+
+  slide.appendChild(media);
+  track.appendChild(slide);
+});
+
+  const prevBtn = document.createElement('button');
+  prevBtn.classList.add('carousel-btn', 'carousel-prev');
+  prevBtn.textContent = '‹';
+
+  const nextBtn = document.createElement('button');
+  nextBtn.classList.add('carousel-btn', 'carousel-next');
+  nextBtn.textContent = '›';
+
+  const counter = document.createElement('div');
+  counter.classList.add('carousel-counter');
+
+  carousel.appendChild(track);
+  carousel.appendChild(prevBtn);
+  carousel.appendChild(nextBtn);
+  carousel.appendChild(counter);
+
+  let current = 0;
+
+  function update() {
+    track.style.transform = `translateX(-${current * 100}%)`;
+    counter.textContent = `${current + 1} / ${images.length}`;
+  }
+
+  prevBtn.addEventListener('click', () => {
+    current = (current - 1 + images.length) % images.length;
+    update();
+  });
+
+  nextBtn.addEventListener('click', () => {
+    current = (current + 1) % images.length;
+    update();
+  });
+
+  update();
+  return carousel;
+}
