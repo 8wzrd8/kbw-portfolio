@@ -27,7 +27,7 @@ export function addStars(scene) {
     const distance = Math.sqrt(x * x + y * y + z * z);
 
     // Only accept this star if it's far enough away from the center
-    if (distance > minDistance && y >= 0) {
+    if (distance > minDistance && y >= 10) {
       positions[i]     = x;
       positions[i + 1] = y;
       positions[i + 2] = z;
@@ -41,6 +41,7 @@ export function addStars(scene) {
   // Stars farther away appear smaller
   const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.1, sizeAttenuation: true, fog: false });
   const stars = new THREE.Points(starGeometry, starMaterial);
+  stars.layers.set(1);
   scene.add(stars);
 }
 

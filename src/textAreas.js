@@ -30,6 +30,9 @@ export function createTextAreas(scene, camera, renderer) {
     const pivot = new THREE.Group();
     pivot.position.set(...position);
     pivot.add(model);
+    pivot.layers.set(1);
+    pivot.traverse((child) => child.layers.set(1));
+
     if (useLookAt) pivot.lookAt(0, 0, 0);
     Object.assign(pivot.userData, userData);
 
@@ -43,23 +46,24 @@ export function createTextAreas(scene, camera, renderer) {
       clickable.push(pivot);
     }
 
+    
     scene.add(pivot);
   });
 }
   //front
-  loadLabel('/constellationModels/aboutMeModel.glb',      [25, 12.5, 15],   3, { modalId: 'about-me-modal' });
-  loadLabel('/constellationModels/thisSiteModel.glb',     [-25, 12.5, 15],  3, { modalId: 'this-site-modal' });
-  loadLabel('/constellationModels/titleModel.glb',        [0, 12.5, 25],    4, {});
+  loadLabel('/constellationModels/aboutMeModel.glb',      [25, 22.5, 15],   3, { modalId: 'about-me-modal' });
+  loadLabel('/constellationModels/thisSiteModel.glb',     [-25, 22.5, 15],  3, { modalId: 'this-site-modal' });
+  loadLabel('/constellationModels/titleModel.glb',        [0, 22.5, 25],    4, {});
 
   //middle
-  loadLabel('/constellationModels/asuModel.glb',          [-25, 10, 0],   3, { type: 'link', url: 'https://app.joinhandshake.com/profiles/xzw9dx' });
-  loadLabel('/constellationModels/snakeModel.glb',        [25, 10, 0],    3, { modalId: 'snake-modal' });
+  loadLabel('/constellationModels/asuModel.glb',          [-25, 22.5, 0],   3, { type: 'link', url: 'https://app.joinhandshake.com/profiles/xzw9dx' });
+  loadLabel('/constellationModels/snakeModel.glb',        [25, 22.5, 0],    3, { modalId: 'snake-modal' });
 
   //behind
-  loadLabel('/constellationModels/calculatorModel.glb',   [-25, 12.5, -15], 3, { modalId: 'calculator-modal' });
-  loadLabel('/constellationModels/airFreshenerModel.glb', [25, 12.5, -15],  3, { modalId: 'air-freshener-modal' });
-  loadLabel('/constellationModels/creditsModel.glb',      [0, 10, -20],    3, { modalId: 'credits-modal' });
-  loadLabel('/constellationModels/cookedModel.glb',        [0, 2, -20],    2, { type: 'link', url: 'https://www.bls.gov/news.release/empsit.nr0.htm' });
+  loadLabel('/constellationModels/calculatorModel.glb',   [-25, 22.5, -15], 3, { modalId: 'calculator-modal' });
+  loadLabel('/constellationModels/airFreshenerModel.glb', [25, 22.5, -15],  3, { modalId: 'air-freshener-modal' });
+  loadLabel('/constellationModels/creditsModel.glb',      [0, 20, -20],    3, { modalId: 'credits-modal' });
+  loadLabel('/constellationModels/cookedModel.glb',        [0.25, 17.5, -20],    2, { type: 'link', url: 'https://www.bls.gov/news.release/empsit.nr0.htm' });
 
   //Close button handler for all modals
   document.querySelectorAll('.modal-close-btn').forEach(btn => {

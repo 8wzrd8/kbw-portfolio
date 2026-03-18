@@ -1,8 +1,7 @@
 import './style.css';
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { clone } from 'three/addons/utils/SkeletonUtils.js';
 import { Sky } from 'three/addons/objects/Sky.js';
+import { Water } from 'three/addons/objects/Water.js';
 import { addStars, addShootingStars } from './stars.js';
 import { createTextAreas, initCarousels} from './textAreas.js';
 import { initModalScenes } from './modalScenes.js';
@@ -12,21 +11,12 @@ import { initModalScenes } from './modalScenes.js';
 const loadingScreen = document.getElementById('loading-screen');
 const loadingBar = document.getElementById('loading-bar');
 
-const loadingManager = new THREE.LoadingManager(
-  // onLoad - everything finished
-  () => {
-    loadingBar.style.width = '100%';
-    setTimeout(() => {
-      loadingScreen.classList.add('hidden');
-    }, 500); // short delay so user sees 100% before fading
-  },
-  // onProgress
-  (url, itemsLoaded, itemsTotal) => {
-    const progress = (itemsLoaded / itemsTotal) * 100;
-    loadingBar.style.width = progress + '%';
-  }
-);
-const loader = new GLTFLoader(loadingManager);
+setTimeout(() => {
+  loadingBar.style.width = '100%';
+  setTimeout(() => {
+    loadingScreen.classList.add('hidden');
+  }, 500);
+}, 1000);
 
 // Scene
 const scene = new THREE.Scene();
@@ -39,14 +29,14 @@ sky.scale.setScalar(1000);
 scene.add(sky);
 
 const skyUniforms = sky.material.uniforms;
-skyUniforms['turbidity'].value = 2;
+skyUniforms['turbidity'].value = 0.1;
 skyUniforms['rayleigh'].value = 4;
 skyUniforms['mieCoefficient'].value = 0.005;
 skyUniforms['mieDirectionalG'].value = 0.8;
 
 // Sun position (set low for sunset/sunrise look)
 const sun = new THREE.Vector3();
-const phi = THREE.MathUtils.degToRad(90); // near horizon
+const phi = THREE.MathUtils.degToRad(87.5); // near horizon
 const theta = THREE.MathUtils.degToRad(180);
 sun.setFromSphericalCoords(1, phi, theta);
 skyUniforms['sunPosition'].value.copy(sun);
@@ -62,6 +52,8 @@ const updateShootingStars = addShootingStars(scene);
 // Camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.set(0, 0, 0);
+camera.layers.enable(1);
+
 
 // Renderer
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -77,32 +69,28 @@ if (window.innerWidth <= 768) {
 }
 
 
-const mixers = [];
 
-let mixer;
+// Water
+const waterGeometry = new THREE.PlaneGeometry(10000, 10000);
+const water = new Water(waterGeometry, {
+  textureWidth: 512,
+  textureHeight: 512,
+  waterNormals: new THREE.TextureLoader().load(
+    'https://threejs.org/examples/textures/waternormals.jpg',
+    (texture) => { texture.wrapS = texture.wrapT = THREE.RepeatWrapping; }
+  ),
+  sunDirection: sun.clone().normalize(),
+  sunColor: 0xff3c00,
+  waterColor: 0x001e0f,
+  distortionScale: 2.5, 
+})
+water.rotation.x = -Math.PI / 2;
+water.position.y = 0;
+water.receiveShadow = false;
+scene.add(water);
 
-  loader.load('/mainPage/ocean.glb', (gltf) => {
-    const ocean = gltf.scene;
-    ocean.position.set(0, -4, 0);
-    ocean.scale.set(1, 1, 1);
-    scene.add(ocean);
-
-    // Set up animation mixer
-    mixer = new THREE.AnimationMixer(ocean);
-    const action = mixer.clipAction(gltf.animations[0]); // [0] is the first animation
-    action.play();
-  });
 
 
-
-//Makes it so the ocean isn't pitch black
-const sunLight = new THREE.DirectionalLight(0xff3c00, 1000);
-sunLight.position.set(0, 0, -100);
-scene.add(sunLight);
-
-const moonLight = new THREE.DirectionalLight(0xffffff, 100);
-moonLight.position.set(0, 100, 10);
-scene.add(moonLight);
 
 //Wave sounds
 const audio = new Audio('/soundEffects/waves.mp3');
@@ -237,10 +225,11 @@ function animate() {
   elapsed += delta;
 
   //The ocean animation needs this to forward the animation by delta time
-  if (mixer) {mixer.update(delta);}
+  water.material.uniforms['time'].value += delta * 0.25; 
+
 
   //Slowly moves the camera up and down 
-  camera.position.y = Math.sin(elapsed * 0.8) * 0.125;
+  camera.position.y = 10 + Math.sin(elapsed * 0.8) * 0.125;
   camera.rotation.z = Math.sin(elapsed * 0.8) * 0.0225; 
 
   //Moves yaw & pitch 8% closer to the targetYaw every frame
