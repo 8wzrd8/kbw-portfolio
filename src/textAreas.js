@@ -33,10 +33,10 @@ export function createTextAreas(scene, camera, renderer) {
     if (useLookAt) pivot.lookAt(0, 0, 0);
     Object.assign(pivot.userData, userData);
 
-    // Invisible hitbox — easier to click than the thin font geometry
+    // invisible hitbox
     if (Object.keys(userData).length > 0) {
       const hitbox = new THREE.Mesh(
-        new THREE.BoxGeometry(8, 3, 0.5), // adjust width/height to fit your labels
+        new THREE.BoxGeometry(8, 3, 0.5),
         new THREE.MeshBasicMaterial({ visible: false })
       );
       pivot.add(hitbox);
@@ -46,19 +46,19 @@ export function createTextAreas(scene, camera, renderer) {
     scene.add(pivot);
   });
 }
-
+  //front
   loadLabel('/constellationModels/aboutMeModel.glb',      [25, 12.5, 15],   3, { modalId: 'about-me-modal' });
   loadLabel('/constellationModels/thisSiteModel.glb',     [-25, 12.5, 15],  3, { modalId: 'this-site-modal' });
+  loadLabel('/constellationModels/titleModel.glb',        [0, 12.5, 25],    4, {});
 
+  //middle
   loadLabel('/constellationModels/asuModel.glb',          [-25, 10, 0],   3, { type: 'link', url: 'https://app.joinhandshake.com/profiles/xzw9dx' });
   loadLabel('/constellationModels/snakeModel.glb',        [25, 10, 0],    3, { modalId: 'snake-modal' });
 
+  //behind
   loadLabel('/constellationModels/calculatorModel.glb',   [-25, 12.5, -15], 3, { modalId: 'calculator-modal' });
   loadLabel('/constellationModels/airFreshenerModel.glb', [25, 12.5, -15],  3, { modalId: 'air-freshener-modal' });
-  
   loadLabel('/constellationModels/creditsModel.glb',      [0, 10, -20],    3, { modalId: 'credits-modal' });
-  loadLabel('/constellationModels/titleModel.glb',        [0, 12.5, 25],    4, {});
-
   loadLabel('/constellationModels/cookedModel.glb',        [0, 2, -20],    2, { type: 'link', url: 'https://www.bls.gov/news.release/empsit.nr0.htm' });
 
   //Close button handler for all modals
@@ -119,25 +119,31 @@ export function createTextAreas(scene, camera, renderer) {
   });
 }
 
+//Media for mobile
+//May be used for thisSite on desktop to show computer build in steps
 export function initCarousels() {
+  //Gets the current modal from idnex.html
   document.querySelectorAll('.modal-overlay').forEach(modal => {
     const mediaItems = [];
 
+    //Some modals directly override (#) the image cards, has to be handled
     modal.querySelectorAll(
       '.image-card img, .image-card video, .sub-image-card img, .sub-image-card video'
     ).forEach(el => {
       mediaItems.push(el.cloneNode(true));
     });
 
+    //If the modal doesn't have media we return, duh...
     if (mediaItems.length === 0) return;
 
-    // Build the carousel container
+    // js for html to build the carousel
     const carousel = document.createElement('div');
     carousel.classList.add('mobile-carousel');
 
     const track = document.createElement('div');
     track.classList.add('carousel-track');
 
+    //Add each media item to the slide
     mediaItems.forEach(item => {
       const slide = document.createElement('div');
       slide.classList.add('carousel-slide');
@@ -161,13 +167,16 @@ export function initCarousels() {
     carousel.appendChild(nextBtn);
     carousel.appendChild(counter);
 
-    // Append carousel to the modal's scroll container
+    // add the carousel to the scroll container(s)
     const scrollContainer = modal.querySelector('.modal-scroll');
     if (scrollContainer) scrollContainer.appendChild(carousel);
 
     // Carousel logic
     let current = 0;
 
+    //this is the smooth animation
+    //i.e when user selects left/right we move it to the left or right smoothly.
+    //called by prev/next below
     function update() {
       track.style.transform = `translateX(-${current * 100}%)`;
       counter.textContent = `${current + 1} / ${mediaItems.length}`;

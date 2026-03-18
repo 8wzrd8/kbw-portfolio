@@ -1,39 +1,48 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-//This is the starfield for the scene within the HTML pages.
-function getStarfield({ numStars = 500 } = {}) {
-
-  function randomSpherePoint() {
-    const radius = Math.random() * 25 + 25;
-    const u = Math.random();
-    const v = Math.random();
-    const theta = 2 * Math.PI * u;
-    const phi = Math.acos(2 * v - 1);
-    return new THREE.Vector3(
-      radius * Math.sin(phi) * Math.cos(theta),
-      radius * Math.sin(phi) * Math.sin(theta),
-      radius * Math.cos(phi)
-    );
-  }
-
-  const verts = [];
-  const colors = [];
-  for (let i = 0; i < numStars; i++) {
-    const pos = randomSpherePoint();
-    const col = new THREE.Color().setHSL(0.6, 0.2, Math.random());
-    verts.push(pos.x, pos.y, pos.z);
-    colors.push(col.r, col.g, col.b);
-  }
-
+//this code is almost exactly as addStars() within star.js
+//stars can generate below y=0 and parallax is needed for the scroll
+function getStarfield({ numStars = 4500 } = {}) {
   const geo = new THREE.BufferGeometry();
-  geo.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3));
-  geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+  const positions = new Float32Array(numStars * 3);
+  const colors = new Float32Array(numStars * 3);
+
+  const minDistance = 20;
+  let i = 0;
+
+  while (i < numStars * 3) {
+    const x = (Math.random() - 0.5) * 300;
+    const y = (Math.random() - 0.5) * 300;
+    const z = (Math.random() - 0.5) * 300;
+
+    const distance = Math.sqrt(x * x + y * y + z * z);
+
+    if (distance > minDistance) {
+      positions[i]     = x;
+      positions[i + 1] = y;
+      positions[i + 2] = z;
+
+      const col = new THREE.Color().setHSL(0.6, 0.2, Math.random());
+      colors[i]     = col.r;
+      colors[i + 1] = col.g;
+      colors[i + 2] = col.b;
+
+      i += 3;
+    }
+  }
+
+  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
   const mat = new THREE.PointsMaterial({
     size: 0.2,
     vertexColors: true,
-    blending: THREE.AdditiveBlending
+    blending: THREE.AdditiveBlending,
+    sizeAttenuation: true,
+    fog: false
   });
+
   return new THREE.Points(geo, mat);
 }
 
@@ -113,14 +122,15 @@ function initScene(canvasId, overlayId, hasScroll = false, setup = null) {
   observer.observe(modalOverlay, { attributes: true, attributeFilter: ['class'] });
 }
 
-
+//called from main.js
 export function initModalScenes() {
+  //these are the only ones that are clickable AND open a page WITHIN the site
   initScene('about-me-canvas',      'about-me-modal',       true);
   initScene('snake-canvas',         'snake-modal',          true);
   initScene('calculator-canvas',    'calculator-modal',     true);
   initScene('this-site-canvas',     'this-site-modal',      true);
 
-
+  //same as above; however, it has an animation of the air freshener
   initScene('air-freshener-canvas', 'air-freshener-modal',  true, (scene, camera, setOnScroll, setOnAnimate) => {
     camera.position.z = 8;
 
@@ -136,12 +146,12 @@ export function initModalScenes() {
       scene.add(model);
     });
 
-    // On scroll: update target rotation
+    // on scroll: update target rotation
     setOnScroll((scrollPosY) => {
       targetRotationY = scrollPosY * Math.PI * 4; // full spins as you scroll
     });
 
-    // On animate: smoothly lerp rotation toward target
+    // on animate: smoothly lerp rotation toward target
     setOnAnimate(() => {
       if (!model) return;
       currentRotationY += (targetRotationY - currentRotationY) * 0.05;
